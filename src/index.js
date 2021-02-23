@@ -679,7 +679,7 @@ export function index(){
             </span>
         </span>
         <span class="version" id="versionLog"><a href="wiki.html#changelog" target="_blank"></a></span>
-        <span class="right has-text-warning"><a href="https://github.com/TMVictor/Evolve-Scripting-Edition/blob/master/README.md" target="_blank">Why scripting edition?</a></span>
+        <span class="right has-text-danger"><a href="https://github.com/TMVictor/Evolve-Scripting-Edition/blob/master/README.md" target="_blank">Scripting Edition ending 12 March 2021</a></span>
     </div>`);
 
     let main = $(`<div id="main" class="main"></div>`);
@@ -954,9 +954,9 @@ export function index(){
     // Bottom Bar
     $('body').append(`
         <div class="promoBar">
-            <span class="left">
+            <span class="left has-text-danger">
                 <h1>
-                <a href="https://github.com/TMVictor/Evolve-Scripting-Edition/blob/master/README.md" target="_blank"><h1>Unsupported Scripting Edition</h1></a>
+                <a href="https://github.com/TMVictor/Evolve-Scripting-Edition/blob/master/README.md" target="_blank"><h1>Scripting Edition ending 12 March 2021</h1></a>
                 </h1>
             </span>
             <span class="right">
