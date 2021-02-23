@@ -679,7 +679,7 @@ export function index(){
             </span>
         </span>
         <span class="version" id="versionLog"><a href="wiki.html#changelog" target="_blank"></a></span>
-        <span class="right has-text-danger"><a href="https://github.com/TMVictor/Evolve-Scripting-Edition/blob/master/README.md" target="_blank">Scripting Edition ending 12 March 2021</a></span>
+        <span class="right has-text-danger"><a style="color:#f14668 !important;" href="https://github.com/TMVictor/Evolve-Scripting-Edition/blob/master/README.md" target="_blank">Scripting Edition ending 12 March 2021</a></span>
     </div>`);
 
     let main = $(`<div id="main" class="main"></div>`);
@@ -956,7 +956,7 @@ export function index(){
         <div class="promoBar">
             <span class="left has-text-danger">
                 <h1>
-                <a href="https://github.com/TMVictor/Evolve-Scripting-Edition/blob/master/README.md" target="_blank"><h1>Scripting Edition ending 12 March 2021</h1></a>
+                <a href="https://github.com/TMVictor/Evolve-Scripting-Edition/blob/master/README.md" target="_blank"><h1 style="color:#f14668 !important;">Ending 12 March 2021</h1></a>
                 </h1>
             </span>
             <span class="right">
