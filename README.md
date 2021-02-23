@@ -10,7 +10,9 @@ What you need to do:
 1. Export your save game from the Scripting Edition and store it somewhere safe (you should be making a regular backup of your save game anyway!)
 1. Export your current script settings and store them somewhere safe
 1. Import your save game into the original version of Evolve at https://pmotschmann.github.io/Evolve/
-1. IMPORTANT: In the original game settings tab you must enable the following settings: "Enable Debug Mode" and "Preload Tab Content"
+1. IMPORTANT: In the original game settings tab you must enable the following settings or scripts will not work:
+    1. "Enable Debug Mode"
+    1. "Preload Tab Content"
 1. If you are already using Vollch's script
     1. Import your current script settings into the original version of Evolve at https://pmotschmann.github.io/Evolve/
 1. If you are not already using Vollch's script
