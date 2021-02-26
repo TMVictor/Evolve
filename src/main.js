@@ -36,6 +36,14 @@ import { enableDebug, updateDebugData } from './debug.js';
     });
 }
 
+var multitab = false;
+window.addEventListener('storage', (e) => {
+    if (multitab === false){
+        messageQueue(loc(`multitab_warning`), 'danger', true);
+    }
+    multitab = true;
+});
+
 // Scripting edition always enable debug
 //if (global.settings.expose){
     enableDebug();
@@ -173,7 +181,7 @@ vBind({
 
 popover('race',
     function(){
-        return races[global.race.species].desc;
+        return typeof races[global.race.species].desc === 'string' ? races[global.race.species].desc : races[global.race.species].desc();
     },{
         elm: '#race > .name'
     }
@@ -7894,6 +7902,10 @@ function longLoop(){
     // Save game state
     global.stats['current'] = Date.now();
     save.setItem('evolved',LZString.compressToUTF16(JSON.stringify(global)));
+
+    if (global.race.species !== 'protoplasm' && (global.stats.days + global.stats.tdays) % 100000 === 99999){
+        messageQueue(loc(`backup_warning`), 'advanced', true);
+    }
 
     if (global.settings.pause && webWorker.s){
         gameLoop('stop');
