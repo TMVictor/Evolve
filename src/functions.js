@@ -54,6 +54,8 @@ export function popover(id,content,opts){
 }
 
 export function gameLoop(act){
+    return;
+
     switch(act){
         case 'stop':
             {
@@ -125,6 +127,16 @@ window.exportGame = function exportGame(){
     }
     global.stats['current'] = Date.now();
     return LZString.compressToBase64(JSON.stringify(global));
+}
+
+window.exportScriptSettings = function exportScriptSettings(){
+    var settings = {};
+    var jsonSettings = localStorage.getItem('settings');
+    if (jsonSettings !== null) {
+        settings = JSON.parse(jsonSettings);
+    }
+
+    return JSON.stringify(settings);
 }
 
 window.importGame = function importGame(data,utf16){

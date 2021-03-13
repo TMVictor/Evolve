@@ -35,6 +35,11 @@ export function mainVue(){
                 $('#importExport').select();
                 document.execCommand('copy');
             },
+            saveScriptExport(){
+                $('#importExport').val(exportScriptSettings());
+                $('#importExport').select();
+                document.execCommand('copy');
+            },
             restoreGame(){
                 let restore_data = save.getItem('evolveBak') || false;
                 if (restore_data){
@@ -167,6 +172,8 @@ function tabLabel(lbl){
 }
 
 export function initTabs(){
+    return;
+
     // Scripting requires preloaded tab data
     global.settings.tabLoad = true;
 
@@ -184,6 +191,8 @@ export function initTabs(){
 }
 
 export function loadTab(tab){
+    return;
+
     if (!global.settings.tabLoad){
         clearResDrag();
         clearGrids();
@@ -666,20 +675,7 @@ export function index(){
     // Top Bar
     $('body').append(`<div id="topBar" class="topBar">
         <h2 class="is-sr-only">Top Bar</h2>
-        <span class="planetWrap"><span class="planet">{{ race.species | planet }}</span><span class="universe" v-show="showUniverse()">{{ race.universe | universe }}</span></span>
-        <span class="calendar">
-            <span v-show="city.calendar.day">
-                <b-tooltip :label="moon()" :aria-label="moon()" position="is-bottom" size="is-small" multilined animated><i id="moon" class="moon wi"></i></b-tooltip>
-                <span class="year">${loc('year')} <span class="has-text-warning">{{ city.calendar.year }}</span></span>
-                <span class="day">${loc('day')} <span class="has-text-warning">{{ city.calendar.day }}</span></span>
-                <b-tooltip :label="weather()" :aria-label="weather()" position="is-bottom" size="is-small" multilined animated><i id="weather" class="weather wi"></i></b-tooltip>
-                <b-tooltip :label="temp()" :aria-label="temp()" position="is-bottom" size="is-small" multilined animated><i id="temp" class="temp wi"></i></b-tooltip>
-                <b-tooltip :label="atRemain()" v-show="s.at" :aria-label="atRemain()" position="is-bottom" size="is-small" multilined animated><span class="atime has-text-caution">{{ s.at | remain }}</span></b-tooltip>
-                <span id="pausegame" class="atime" role="button" @click="pause" :aria-label="pausedesc()"></span>
-            </span>
-        </span>
-        <span class="version" id="versionLog"><a href="wiki.html#changelog" target="_blank"></a></span>
-        <span class="right has-text-danger"><a style="color:#f14668 !important;" href="https://github.com/TMVictor/Evolve-Scripting-Edition/blob/master/README.md" target="_blank">Scripting Edition ending 12 March 2021</a></span>
+        <span class="right has-text-danger"><a style="color:#f14668 !important;" href="https://github.com/TMVictor/Evolve-Scripting-Edition/blob/master/README.md" target="_blank">Scripting Edition deprecated on 12 March 2021. Click for Readme.</a></span>
     </div>`);
 
     let main = $(`<div id="main" class="main"></div>`);
@@ -689,18 +685,6 @@ export function index(){
 
     // Left Column
     columns.append(`<div class="column is-one-quarter leftColumn">
-        <div id="race" class="race columns is-mobile is-gapless">
-            <h2 class="is-sr-only">Race Info</h2>
-            <div class="column is-one-quarter name">{{ name() }}</div>
-            <div class="column is-half morale-contain"><span id="morale" v-show="city.morale.current" class="morale">${loc('morale')} <span class="has-text-warning">{{ city.morale.current | mRound }}%</span></div>
-            <div class="column is-one-quarter power"><span id="powerStatus" class="has-text-warning" v-show="city.powered"><span>MW</span> <span id="powerMeter" class="meter">{{ city.power | approx }}</span></span></div>
-        </div>
-        <div id="sideQueue">
-            <div id="buildQueue" class="bldQueue has-text-info" v-show="display"></div>
-            <h2 class="is-sr-only">Message Queue</h2>
-            <div id="msgQueue" class="msgQueue sticky has-text-info" aria-live="polite"></div>
-        </div>
-        <div id="resources" class="resources sticky"><h2 class="is-sr-only">${loc('tab_resources')}</h2></div>
     </div>`);
 
     // Center Column
@@ -713,236 +697,17 @@ export function index(){
     let tabs = $(`<b-tabs v-model="s.civTabs" :animated="s.animated" @input="swapTab"></b-tabs>`);
     content.append(tabs);
 
-    // Evolution Tab
-    let evolution = $(`<b-tab-item id="evolution" class="tab-item sticky" :visible="s.showEvolve">
-        <template slot="header">
-            {{ 'tab_evolve' | label }}
-        </template>
-    </b-tab-item>`);
-    tabs.append(evolution);
-
-    // City Tab
-    let city = $(`<b-tab-item :visible="s.showCiv">
-        <template slot="header">
-            {{ 'tab_civil' | label }}
-        </template>
-        <div id="mTabCivil"></div>
-    </b-tab-item>`);
-    tabs.append(city);
-
-    // Civics Tab
-    let civic = $(`<b-tab-item :visible="s.showCivic">
-        <template slot="header">
-            {{ 'tab_civics' | label }}
-        </template>
-        <div id="mTabCivic"></div>
-    </b-tab-item>`);
-    tabs.append(civic);
-
-    // Research Tab
-    let research = $(`<b-tab-item :visible="s.showResearch">
-        <template slot="header">
-            {{ 'tab_research' | label }}
-        </template>
-        <div id="mTabResearch"></div>
-    </b-tab-item>`);
-    tabs.append(research);
-
-    // Resources Tab
-    let resources = $(`<b-tab-item :visible="s.showResources">
-        <template slot="header">
-            {{ 'tab_resources' | label }}
-        </template>
-        <div id="mTabResource"></div>
-    </b-tab-item>`);
-    tabs.append(resources);
-
-    // ARPA Tab
-    let arpa = $(`<b-tab-item :visible="s.showGenetics">
-        <template slot="header">
-            {{ 'tech_arpa' | label }}
-        </template>
-        <div id="mTabArpa"></div>
-    </b-tab-item>`);
-    tabs.append(arpa);
-
-    // Stats Tab
-    let stats = $(`<b-tab-item :visible="s.showAchieve">
-        <template slot="header">
-            {{ 'tab_stats' | label }}
-        </template>
-        <div id="mTabStats"></div>
-    </b-tab-item>`);
-    tabs.append(stats);
-
-    let iconlist = '';
-    let icons = [
-        {i: 'nuclear',      f: 'steelem',       r: 2 },
-        {i: 'zombie',       f: 'the_misery',    r: 2 },
-        {i: 'fire',         f: 'ill_advised',   r: 2 },
-        {i: 'mask',         f: 'friday',        r: 1 },
-        {i: 'skull',        f: 'demon_slayer',  r: 2 },
-        {i: 'taijitu',      f: 'equilibrium',   r: 2 },
-        {i: 'martini',      f: 'utopia',        r: 2 },
-        {i: 'lightbulb',    f: 'energetic',     r: 2 },
-        {i: 'trash',        f: 'garbage_pie',   r: 2 },
-        {i: 'turtle',       f: 'finish_line',   r: 2 },
-        {i: 'heart',        f: 'valentine',     r: 1 },
-        {i: 'clover',       f: 'leprechaun',    r: 1 },
-        {i: 'bunny',        f: 'easter',        r: 1 },
-        {i: 'egg',          f: 'egghunt',       r: 1 },
-        {i: 'ghost',        f: 'halloween',     r: 1 },
-        {i: 'candy',        f: 'trickortreat',  r: 1 },
-        {i: 'turkey',       f: 'thanksgiving',  r: 1 },
-        {i: 'present',      f: 'xmas',          r: 1 }
-    ];
-
-    for (let i=0; i<icons.length; i++){
-        if (global.stats.feat[icons[i].f] && global.stats.feat[icons[i].f] >= icons[i].r){
-            iconlist = iconlist + `<b-dropdown-item v-on:click="icon('${icons[i].i}')">{{ '${icons[i].i}' | label }}</b-dropdown-item>`;
-        }
-        else if (global.settings.icon === icons[i].i){
-            global.settings.icon = 'star';
-        }
-    }
-
-    let egg = easterEgg(9,14);
-    let hideEgg = '';
-    if (egg.length > 0){
-        hideEgg = `<b-dropdown-item>${egg}</b-dropdown-item>`;
-    }
-
-    let trick = trickOrTreat(11,12);
-    let hideTreat = '';
-    if (trick.length > 0){
-        hideTreat = `<b-dropdown-item>${trick}</b-dropdown-item>`;
-    }
-
-    let localelist = '';
-    let current_locale = '';
-    if (Object.keys(locales).length > 1){
-        Object.keys(locales).forEach(function (locale){
-          let selected = global.settings.locale;
-            if (selected === locale) {
-              current_locale = locales[locale];
-            }
-            localelist = localelist + `<b-dropdown-item v-on:click="lChange('${locale}')">${locales[locale]}</b-dropdown-item>`;
-        });
-    }
-
     // Settings Tab
     let settings = $(`<b-tab-item class="settings sticky">
         <template slot="header">
             {{ 'tab_settings' | label }}
         </template>
-        <div class="theme">
-            <span>{{ 'theme' | label }} </span>
-            <b-dropdown hoverable>
-                <button class="button is-primary" slot="trigger">
-                    <span>{{ 'theme_' + s.theme | label }}</span>
-                    <i class="fas fa-sort-down"></i>
-                </button>
-                <b-dropdown-item v-on:click="setTheme('dark')">{{ 'theme_dark' | label }}</b-dropdown-item>
-                <b-dropdown-item v-on:click="setTheme('light')">{{ 'theme_light' | label }}</b-dropdown-item>
-                <b-dropdown-item v-on:click="setTheme('night')">{{ 'theme_night' | label }}</b-dropdown-item>
-                <b-dropdown-item v-on:click="setTheme('darkNight')">{{ 'theme_darkNight' | label }}</b-dropdown-item>
-                <b-dropdown-item v-on:click="setTheme('redgreen')">{{ 'theme_redgreen' | label }}</b-dropdown-item>
-                <b-dropdown-item v-on:click="setTheme('gruvboxLight')">{{ 'theme_gruvboxLight' | label }}</b-dropdown-item>
-                <b-dropdown-item v-on:click="setTheme('gruvboxDark')">{{ 'theme_gruvboxDark' | label }}</b-dropdown-item>
-                <b-dropdown-item v-on:click="setTheme('orangeSoda')">{{ 'theme_orangeSoda' | label }}</b-dropdown-item>
-                ${hideEgg}
-            </b-dropdown>
-            <span>{{ 'units' | label }} </span>
-            <b-dropdown hoverable>
-                <button class="button is-primary" slot="trigger">
-                    <span>{{ s.affix | notation }}</span>
-                    <i class="fas fa-sort-down"></i>
-                </button>
-                <b-dropdown-item v-on:click="numNotation('si')">{{ 'metric' | label }}</b-dropdown-item>
-                <b-dropdown-item v-on:click="numNotation('sci')">{{ 'scientific' | label }}</b-dropdown-item>
-                <b-dropdown-item v-on:click="numNotation('sln')">{{ 'sln' | label }}</b-dropdown-item>
-                ${hideTreat}
-            </b-dropdown>
-
-            <span>{{ 'icons' | label }} </span>
-            <b-dropdown hoverable>
-                <button class="button is-primary" slot="trigger">
-                    <span>{{ s.icon | label }}</span>
-                    <i class="fas fa-sort-down"></i>
-                </button>
-                <b-dropdown-item v-on:click="icon('star')">{{ 'star' | label }}</b-dropdown-item>
-                ${iconlist}
-            </b-dropdown>
-        </div>
-        <div id="localization" class="localization">
-            <span>{{ 'locale' | label }} </span>
-            <b-dropdown hoverable>
-                <button class="button is-primary" slot="trigger">
-                    <span>${current_locale}</span>
-                    <i class="fas fa-sort-down"></i>
-                </button>
-                ${localelist}
-            </b-dropdown>
-
-            <span>{{ 'font' | label }} </span>
-            <b-dropdown hoverable>
-                <button class="button is-primary" slot="trigger">
-                    <span>{{ s.font | label }}</span>
-                    <i class="fas fa-sort-down"></i>
-                </button>
-                <b-dropdown-item v-on:click="font('standard')">{{ 'standard' | label }}</b-dropdown-item>
-                <b-dropdown-item v-on:click="font('large_log')">{{ 'large_log' | label }}</b-dropdown-item>
-                <b-dropdown-item v-on:click="font('large_all')">{{ 'large_all' | label }}</b-dropdown-item>
-            </b-dropdown>
-        </div>
-        <b-switch class="setting" v-model="s.pause" @input="unpause"><b-tooltip :label="locString('settings12')" position="is-bottom" size="is-small" multilined animated>{{ 'pause' | label }}</b-tooltip></b-switch>
-        <b-switch class="setting" v-model="s.mKeys"><b-tooltip :label="locString('settings1')" position="is-bottom" size="is-small" multilined animated>{{ 'm_keys' | label }}</b-tooltip></b-switch>
-        <b-switch class="setting" v-model="s.cLabels"><b-tooltip :label="locString('settings5')" position="is-bottom" size="is-small" multilined animated>{{ 'c_cat' | label }}</b-tooltip></b-switch>
-        <b-switch class="setting" v-model="s.qKey"><b-tooltip :label="locString('settings6')" position="is-bottom" size="is-small" multilined animated>{{ 'q_key' | label }}</b-tooltip></b-switch>
-        <b-switch class="setting" v-model="s.qAny"><b-tooltip :label="locString('settings7')" position="is-bottom" size="is-small" multilined animated>{{ 'q_any' | label }}</b-tooltip></b-switch>
-        <b-switch class="setting" v-model="s.expose"><b-tooltip :label="locString('settings8')" position="is-bottom" size="is-small" multilined animated>{{ 'expose' | label }}</b-tooltip></b-switch>
-        <b-switch class="setting" v-model="s.tabLoad" @input="toggleTabLoad"><b-tooltip :label="locString('settings11')" position="is-bottom" size="is-small" multilined animated>{{ 'tabLoad' | label }}</b-tooltip></b-switch>
-        <b-switch class="setting" v-model="s.boring"><b-tooltip :label="locString('settings10')" position="is-bottom" size="is-small" multilined animated>{{ 'boring' | label }}</b-tooltip></b-switch>
-        <div>
-            <div>${loc('key_mappings')}</div>
-            <div class="keyMap"><span>${loc('multiplier',[10])}</span> <b-input v-model="s.keyMap.x10" id="x10Key"></b-input></div>
-            <div class="keyMap"><span>${loc('multiplier',[25])}</span> <b-input class="keyMap" v-model="s.keyMap.x25" id="x25Key"></b-input></div>
-            <div class="keyMap"><span>${loc('multiplier',[100])}</span> <b-input class="keyMap" v-model="s.keyMap.x100" id="x100Key"></b-input></div>
-            <div class="keyMap"><span>${loc('q_key')}</span> <b-input class="keyMap" v-model="s.keyMap.q" id="queueKey"></b-input></div>
-        </div>
-        <div class="importExport">
-            <div>${loc('tab_mappings')}</div>
-            <div class="keyMap"><span>${loc('tab_city5')}</span> <b-input v-model="s.keyMap.showCiv" id="showCivKey"></b-input></div>
-            <div class="keyMap"><span>${loc('tab_civics')}</span> <b-input v-model="s.keyMap.showCivic" id="showCivicKey"></b-input></div>
-            <div class="keyMap"><span>${loc('tab_research')}</span> <b-input v-model="s.keyMap.showResearch" id="showResearchKey"></b-input></div>
-            <div class="keyMap"><span>${loc('tab_resources')}</span> <b-input v-model="s.keyMap.showResources" id="showResourcesKey"></b-input></div>
-            <div class="keyMap"><span>${loc('tech_arpa')}</span> <b-input v-model="s.keyMap.showGenetics" id="showGeneticsKey"></b-input></div>
-            <div class="keyMap"><span>${loc('tab_stats')}</span> <b-input v-model="s.keyMap.showAchieve" id="showAchieveKey"></b-input></div>
-            <div class="keyMap"><span>${loc('tab_settings')}</span> <b-input v-model="s.keyMap.settings" id="settingshKey"></b-input></div>
-        </div>
         <div class="importExport">
             <b-field label="${loc('import_export')}">
                 <b-input id="importExport" type="textarea"></b-input>
             </b-field>
-            <button class="button" @click="saveImport">{{ 'import' | label }}</button>
             <button class="button" @click="saveExport">{{ 'export' | label }}</button>
-            <button class="button right" @click="restoreGame"><b-tooltip :label="locString('settings9')" position="is-top" size="is-large" multilined animated>{{ 'restore' | label }}</b-tooltip></button>
-        </div>
-        <div class="reset">
-            <b-collapse :open="false">
-                <b-switch v-model="s.disableReset" slot="trigger">{{ 'enable_reset' | label }}</b-switch>
-                <div class="notification">
-                    <div class="content">
-                        <h4 class="has-text-danger">
-                            {{ 'reset_warn' | label }}
-                        </h4>
-                        <p>
-                            <button class="button" :disabled="!s.disableReset" @click="soft_reset()"><b-tooltip :label="locString('settings4')" position="is-top" size="is-large" multilined animated>{{ 'reset_soft' | label }}</b-tooltip></button>
-                            <button class="button right" :disabled="!s.disableReset" @click="reset()"><b-tooltip :label="locString('settings3')" position="is-top" size="is-small" multilined animated>{{ 'reset_hard' | label }}</b-tooltip></button>
-                        </p>
-                    </div>
-                </div>
-            </b-collapse>
+            <button class="button" @click="saveScriptExport">Export Script Settings</button>
         </div>
     </b-tab-item>`);
 
@@ -963,12 +728,7 @@ export function index(){
                 <h2 class="is-sr-only">External Links</h2>
                 <ul class="external-links">
                     <li><a href="https://pmotschmann.github.io/Evolve/" target="_blank">Original Game</a></li>
-                    <li><a href="wiki.html" target="_blank">Wiki</a></li>
-                    <li><a href="https://www.reddit.com/r/EvolveIdle/" target="_blank">Reddit</a></li>
                     <li><a href="https://discord.gg/dcwdQEr" target="_blank">Discord</a></li>
-                    <li><a href="https://github.com/pmotschmann/Evolve" target="_blank">Original GitHub</a></li>
-                    <li><a href="https://www.patreon.com/demagorddon" target="_blank">Demagorddon's Patreon</a></li>
-                    <li><a href="https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=PTRJZBW9J662C&currency_code=USD&source=url" target="_blank">Donate to Demagorddon</a></li>
                 </ul>
             </span>
         </div>
